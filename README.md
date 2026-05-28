@@ -91,7 +91,7 @@ PORT=5000
 MONGODB_URI=mongodb://127.0.0.1:27017/taskmanager
 JWT_SECRET=your_secret_key
 JWT_EXPIRES_IN=7d
-CLIENT_URL=http://localhost:5173
+CLIENT_URLS=http://localhost:5173
 ```
 
 ### Frontend (`.env`)
@@ -128,7 +128,33 @@ VITE_API_URL=http://localhost:5000/api
 - MongoDB is available locally at `mongodb://127.0.0.1:27017`
 - Each user can only access their own tasks
 - JWT token is stored in browser `localStorage`
-- Deployment will be handled separately
+- Deployment can be done using Render (backend) + Vercel (frontend)
+
+## Deployment (Render + Vercel)
+
+### 1) Deploy Backend to Render
+
+- In Render: **New** → **Blueprint** → select this repo
+- Render will detect `render.yaml` and create the backend service
+
+Set these environment variables in Render:
+- **`MONGODB_URI`**: MongoDB Atlas connection string
+- **`JWT_SECRET`**: strong random secret
+- **`CLIENT_URLS`**: comma-separated allowed origins (include your Vercel domain), e.g.
+  - `https://your-app.vercel.app,http://localhost:5173`
+
+After deploy, your API will look like:
+- `https://<your-render-service>.onrender.com/api`
+
+### 2) Deploy Frontend to Vercel
+
+- In Vercel: **New Project** → import this repo
+- Set **Root Directory** to `frontend`
+- Add Environment Variable:
+  - **`VITE_API_URL`**: `https://<your-render-service>.onrender.com/api`
+- Deploy
+
+Note: `frontend/vercel.json` is included so React Router routes work on refresh.
 
 ## Scripts
 
